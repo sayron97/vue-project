@@ -1,6 +1,6 @@
 <template>
     <div class="main">
-        <row>
+
 
             <div class="insta text-center">
                 <b-img src="/img/insta.png" fluid alt="Responsive image"/>
@@ -28,7 +28,6 @@
                     </b-col>
                 </b-row>
             </b-container>
-        </row>
 
 
 
@@ -69,6 +68,7 @@
     .card{
         border: none;
         padding: 0;
+        flex-direction: row;
     }
     .card-img-top{
         width: auto;
@@ -76,7 +76,6 @@
     }
     .networks{
         margin-top: 60px;
-        margin-bottom: 20px;
     }
 
 
