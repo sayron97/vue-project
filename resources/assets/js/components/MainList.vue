@@ -10,14 +10,15 @@
                    </div>
                </div>
                <div class="product-header-slider">
-                   <b-card-group columns>
+                   <b-card-group columns @click="$router.push({name: 'product', params: {id: 1}})">
                        <router-link to="/product/1">
                            <b-card style="width: 270px;"
                                img-src="http://interier-foto.ru/wp-content/uploads/2014/11/juzhno-chujskij-hrebet4012.jpg"
                                img-fluid
                                img-alt="image"
                                img-top
-                               v-for="i in images">
+                               v-for="i in images"
+                                   @click='unshowComponent'>
                            <b-card-img src="img/Corner.png"
                                        alt="Image"
                                        bottom></b-card-img>
@@ -192,5 +193,11 @@
                 imagesThree : [ 0, 1, 2]
             }
         },
+
+        methods: {
+            unshowComponent(){
+                this.$emit('unshowComponent', false);
+            }
+        }
     }
 </script>

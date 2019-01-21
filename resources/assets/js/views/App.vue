@@ -23,8 +23,9 @@
                         </div>
                     </div>
                     <div class="col-md-12">
-                        <brand></brand>
-                        <social-networks></social-networks>
+                        <brand v-if="showComponent"></brand>
+                        <social-networks v-if="showComponent"></social-networks>
+                        <networks></networks>
                     </div>
                 </div>
             </div>
@@ -93,6 +94,7 @@
     import SocialNetworks from '../components/SocialNetworks.vue'
     import FooterPanel from '../components/FooterPanel.vue'
     import ProductCard from '../components/ProductCard.vue'
+    import Networks from '../components/Networks.vue'
     import {Carousel, Slide} from 'vue-carousel';
 
     export default {
@@ -108,8 +110,23 @@
             FooterPage: FooterPage,
             FooterPanel: FooterPanel,
             ProductCard: ProductCard,
+            Networks: Networks,
             Carousel,
             Slide
+        },
+        data() {
+            return {
+            };
+        },
+        computed: {
+            showComponent() {
+                if (this.$route.name == "product") {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
         }
+
     }
 </script>

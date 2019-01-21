@@ -24,8 +24,8 @@ Vue.use(VueCarousel);
 const router = new VueRouter({
     mode: 'history',
     routes: [
-        {path: '/', component: MainList},
-        {path: '/product/:id', component: ProductCard}
+        {path: '/', name: "home", component: MainList},
+        {path: '/product/:id', name: "product", component: ProductCard}
 
     ]
 });

@@ -182,6 +182,12 @@
             white-space: normal;
             font-size: 12px;
         }
+        .card-body{
+            -webkit-box-flex: 1;
+            flex: 1 1 auto;
+            padding: 0px;
+            margin-top: 14px;
+        }
         .card-header{
             background-color: #f8f8f8;
             box-shadow: none;
