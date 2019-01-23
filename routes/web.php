@@ -11,26 +11,10 @@
 |
 */
 
-Route::get('/api/users', function () {
-    return response()->json([
-        [
-            'name' => '1',
-            'email' => 'First'
-        ],
-        [
-            'name' => '2',
-            'email' => 'Second'
-        ],
-        [
-            'name' => '3',
-            'email' => 'Third'
-        ],
-        [
-            'name' => '4',
-            'email' => 'Fourth'
-        ],
-    ]);
-});
+Route::resources([
+    'tags' => 'TagsController',
+    'products' => 'ProductController'
+]);
 Route::post('/send-user', 'SpaController@post');
 Route::get('/users', 'SpaController@get');
 Route::get('/users-delete', 'SpaController@deleteAll');

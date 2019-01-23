@@ -5,31 +5,38 @@
                <div class="product-header-name row">
                   NEW PRODUCTS
                    <div class="slider-arrows">
-                       <b-img src="img/arrow-right.png" width="6" height="12" blank-color="#777" alt="img" class="m-1" />
-                       <b-img src="img/arrow-left.png" width="7" height="13" blank-color="#777" alt="img" class="m-1" />
+                       <b-img @click="prevPage" src="img/arrow-right.png" width="6" height="12" blank-color="#777" alt="img" class="m-1" />
+                       <b-img @click="nextPage" src="img/arrow-left.png" width="7" height="13" blank-color="#777" alt="img" class="m-1" />
                    </div>
                </div>
                <div class="product-header-slider">
                    <b-card-group columns @click="$router.push({name: 'product', params: {id: 1}})">
                        <router-link to="/product/1">
                            <b-card style="width: 270px;"
-                               img-src="http://interier-foto.ru/wp-content/uploads/2014/11/juzhno-chujskij-hrebet4012.jpg"
+                               img-src="img/2.jpeg"
                                img-fluid
                                img-alt="image"
                                img-top
-                               v-for="i in images"
+                               v-for="product in products"
                                    @click='unshowComponent'>
-                           <b-card-img src="img/Corner.png"
+                           <b-card-img v-if="product.is_hot !== 0" src="img/CornerHot.png"
                                        alt="Image"
                                        bottom></b-card-img>
+
+                               <b-card-img v-else-if="product.is_new !== 0" src="img/Corner.png"
+                                           alt="Image"
+                                           bottom></b-card-img>
+                               <b-card-img v-else src=""
+                                           alt=""
+                                           bottom></b-card-img>
                            <p class="card-text">
                                <b-row align-h="between">
-                                   <b-col cols="8" class="card-text-name">Single Thruster 2014</b-col>
-                                   <b-col cols="4" class="card-text-price">€.865.00</b-col>
+                                   <b-col cols="8" class="card-text-name">{{product.name}}</b-col>
+                                   <b-col cols="4" class="card-text-price">€.{{product.cost}}</b-col>
                                </b-row>
                                <b-row align-h="between">
                                    <b-col cols="8"></b-col>
-                                   <b-col cols="4" class="card-text-price-old"><s>€.865.00</s></b-col>
+                                   <b-col cols="4" class="card-text-price-old"><s v-if="product.new_cost !== ''">€.{{product.new_cost}}</s></b-col>
                                </b-row>
                            </p>
                        </b-card>
@@ -76,7 +83,7 @@
             </div>
             <div class="product-header">
                 <div class="product-header-name row">
-                    NEW PRODUCTS
+                    SALE PRODUCTS
                     <div class="slider-arrows">
                         <b-img src="img/arrow-right.png" width="6" height="12" blank-color="#777" alt="img" class="m-1" />
                         <b-img src="img/arrow-left.png" width="7" height="13" blank-color="#777" alt="img" class="m-1" />
@@ -190,14 +197,54 @@
         data() {
             return {
                 images : [ 0, 1, 2, 3, 4, 5 ],
-                imagesThree : [ 0, 1, 2]
+                imagesThree : [ 0, 1, 2],
+                products : [],
+                pageNumber: 0  // по умолчанию 0
+            }
+        },
+        props:{
+            listData:{
+                type:Array,
+                required:true
+            },
+            size:{
+                type:Number,
+                required:false,
+                default: 10
             }
         },
 
         methods: {
             unshowComponent(){
                 this.$emit('unshowComponent', false);
+            },
+
+            getProducts(){
+                axios.get('/products', {})
+                    .then(response => (this.products = response['data']));
+            },
+            nextPage(){
+                this.pageNumber++;
+            },
+            prevPage(){
+                this.pageNumber--;
+            },
+            pageCount(){
+                let l = this.listData.length,
+                    s = this.size;
+                // редакция переводчика спасибо комментаторам
+                return Math.ceil(l/s);
+                // оригинал
+                // return Math.floor(l/s);
+            },
+            paginatedData(){
+                const start = this.pageNumber * this.size,
+                    end = start + this.size;
+                return this.listData.slice(start, end);
             }
+        },
+        beforeMount() {
+            this.getProducts()
         }
     }
 </script>
