@@ -11,13 +11,14 @@
                </div>
                <div class="product-header-slider">
                    <b-card-group columns @click="$router.push({name: 'product', params: {id: 1}})">
+                       <div v-for="product in products">
                        <router-link to="/product/1">
                            <b-card style="width: 270px;"
                                img-src="img/2.jpeg"
                                img-fluid
                                img-alt="image"
                                img-top
-                               v-for="product in products"
+
                                    @click='unshowComponent'>
                            <b-card-img v-if="product.is_hot !== 0" src="img/CornerHot.png"
                                        alt="Image"
@@ -26,9 +27,7 @@
                                <b-card-img v-else-if="product.is_new !== 0" src="img/Corner.png"
                                            alt="Image"
                                            bottom></b-card-img>
-                               <b-card-img v-else src=""
-                                           alt=""
-                                           bottom></b-card-img>
+                               <div v-else class="empty-img"></div>
                            <p class="card-text">
                                <b-row align-h="between">
                                    <b-col cols="8" class="card-text-name">{{product.name}}</b-col>
@@ -42,7 +41,7 @@
                        </b-card>
                        </router-link>
 
-
+                       </div>
                    </b-card-group>
                </div>
            </div>
@@ -126,6 +125,15 @@
         padding: 10px;
     }
 
+    .empty-img{
+        margin-top: -20px;
+        position: relative;
+        bottom: 206px;
+        left: 203px;
+        width: 45px;
+        height:45px
+    }
+
     .card-text {
         font-weight: bold;
         font-size: 14px;
@@ -153,7 +161,8 @@
         flex: 1 1 auto;
         padding: 0px;
         margin-top: -24px;
-        padding-bottom: 5px;
+        /* padding-bottom: 5px;  */
+        height: 100px;
     }
     .card-img-top{
         width: 250px;

@@ -40208,7 +40208,7 @@ exports = module.exports = __webpack_require__(4)(false);
 
 
 // module
-exports.push([module.i, "\n.card{\n    -webkit-box-shadow: none;\n            box-shadow: none;\n    padding: 10px;\n}\n.card-text {\n    font-weight: bold;\n    font-size: 14px;\n    font-family: 'Roboto', sans-serif;\n    color: rgb(51, 51, 51);\n    font-style: italic;\n    line-height: 1.286;\n    -moz-transform: matrix( 0.99931942654312,0,0,0.99931942654312,0,0);\n    -webkit-transform: matrix( 0.99931942654312,0,0,0.99931942654312,0,0);\n    -ms-transform: matrix( 0.99931942654312,0,0,0.99931942654312,0,0);\n}\n.card-text-price {\n    font-family: 'Roboto', sans-serif;\n    font-size: 18px;\n    color: rgb(51, 51, 51);\n    padding-left: 0px;\n    padding-right: 0px;\n}\n.card-text-price-old{\n    color: #e24602;\n}\n.card-body {\n    -ms-flex: 1 1 auto;\n    -webkit-box-flex: 1;\n            flex: 1 1 auto;\n    padding: 0px;\n    margin-top: -24px;\n    padding-bottom: 5px;\n}\n.card-img-top{\n    width: 250px;\n    height:230px\n}\n.card-img-bottom{\n    position: relative;\n    bottom: 206px;\n    left: 203px;\n    width: 45px;\n    height:45px\n}\n.product-header{\n    margin-left: 15px;\n}\n.product-header-name{\n    margin-left: 25px;\n    margin-top: 28px;\n    margin-bottom: 28px;\n    font-size: 22px;\n    font-family: 'Roboto', sans-serif;\n    color: rgb(112, 112, 112);\n    font-style: italic;\n    text-transform: uppercase;\n    line-height: 1.2;\n    text-align: left;\n}\n.slider-arrows{\n    margin-left: 640px;\n    margin-right: 30px;\n}\n\n\n", ""]);
+exports.push([module.i, "\n.card{\n    -webkit-box-shadow: none;\n            box-shadow: none;\n    padding: 10px;\n}\n.empty-img{\n    margin-top: -20px;\n    position: relative;\n    bottom: 206px;\n    left: 203px;\n    width: 45px;\n    height:45px\n}\n.card-text {\n    font-weight: bold;\n    font-size: 14px;\n    font-family: 'Roboto', sans-serif;\n    color: rgb(51, 51, 51);\n    font-style: italic;\n    line-height: 1.286;\n    -moz-transform: matrix( 0.99931942654312,0,0,0.99931942654312,0,0);\n    -webkit-transform: matrix( 0.99931942654312,0,0,0.99931942654312,0,0);\n    -ms-transform: matrix( 0.99931942654312,0,0,0.99931942654312,0,0);\n}\n.card-text-price {\n    font-family: 'Roboto', sans-serif;\n    font-size: 18px;\n    color: rgb(51, 51, 51);\n    padding-left: 0px;\n    padding-right: 0px;\n}\n.card-text-price-old{\n    color: #e24602;\n}\n.card-body {\n    -ms-flex: 1 1 auto;\n    -webkit-box-flex: 1;\n            flex: 1 1 auto;\n    padding: 0px;\n    margin-top: -24px;\n    /* padding-bottom: 5px;  */\n    height: 100px;\n}\n.card-img-top{\n    width: 250px;\n    height:230px\n}\n.card-img-bottom{\n    position: relative;\n    bottom: 206px;\n    left: 203px;\n    width: 45px;\n    height:45px\n}\n.product-header{\n    margin-left: 15px;\n}\n.product-header-name{\n    margin-left: 25px;\n    margin-top: 28px;\n    margin-bottom: 28px;\n    font-size: 22px;\n    font-family: 'Roboto', sans-serif;\n    color: rgb(112, 112, 112);\n    font-style: italic;\n    text-transform: uppercase;\n    line-height: 1.2;\n    text-align: left;\n}\n.slider-arrows{\n    margin-left: 640px;\n    margin-right: 30px;\n}\n\n\n", ""]);
 
 // exports
 
@@ -40221,6 +40221,15 @@ exports.push([module.i, "\n.card{\n    -webkit-box-shadow: none;\n            bo
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -40532,94 +40541,98 @@ var render = function() {
                   }
                 }
               },
-              [
-                _c(
-                  "router-link",
-                  { attrs: { to: "/product/1" } },
-                  _vm._l(_vm.products, function(product) {
-                    return _c(
-                      "b-card",
-                      {
-                        staticStyle: { width: "270px" },
-                        attrs: {
-                          "img-src": "img/2.jpeg",
-                          "img-fluid": "",
-                          "img-alt": "image",
-                          "img-top": ""
-                        },
-                        on: { click: _vm.unshowComponent }
-                      },
+              _vm._l(_vm.products, function(product) {
+                return _c(
+                  "div",
+                  [
+                    _c(
+                      "router-link",
+                      { attrs: { to: "/product/1" } },
                       [
-                        product.is_hot !== 0
-                          ? _c("b-card-img", {
-                              attrs: {
-                                src: "img/CornerHot.png",
-                                alt: "Image",
-                                bottom: ""
-                              }
-                            })
-                          : product.is_new !== 0
-                          ? _c("b-card-img", {
-                              attrs: {
-                                src: "img/Corner.png",
-                                alt: "Image",
-                                bottom: ""
-                              }
-                            })
-                          : _c("b-card-img", {
-                              attrs: { src: "", alt: "", bottom: "" }
-                            }),
-                        _vm._v(" "),
                         _c(
-                          "p",
-                          { staticClass: "card-text" },
+                          "b-card",
+                          {
+                            staticStyle: { width: "270px" },
+                            attrs: {
+                              "img-src": "img/2.jpeg",
+                              "img-fluid": "",
+                              "img-alt": "image",
+                              "img-top": ""
+                            },
+                            on: { click: _vm.unshowComponent }
+                          },
                           [
+                            product.is_hot !== 0
+                              ? _c("b-card-img", {
+                                  attrs: {
+                                    src: "img/CornerHot.png",
+                                    alt: "Image",
+                                    bottom: ""
+                                  }
+                                })
+                              : product.is_new !== 0
+                              ? _c("b-card-img", {
+                                  attrs: {
+                                    src: "img/Corner.png",
+                                    alt: "Image",
+                                    bottom: ""
+                                  }
+                                })
+                              : _c("div", { staticClass: "empty-img" }),
+                            _vm._v(" "),
                             _c(
-                              "b-row",
-                              { attrs: { "align-h": "between" } },
+                              "p",
+                              { staticClass: "card-text" },
                               [
                                 _c(
-                                  "b-col",
-                                  {
-                                    staticClass: "card-text-name",
-                                    attrs: { cols: "8" }
-                                  },
-                                  [_vm._v(_vm._s(product.name))]
+                                  "b-row",
+                                  { attrs: { "align-h": "between" } },
+                                  [
+                                    _c(
+                                      "b-col",
+                                      {
+                                        staticClass: "card-text-name",
+                                        attrs: { cols: "8" }
+                                      },
+                                      [_vm._v(_vm._s(product.name))]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "b-col",
+                                      {
+                                        staticClass: "card-text-price",
+                                        attrs: { cols: "4" }
+                                      },
+                                      [_vm._v("€." + _vm._s(product.cost))]
+                                    )
+                                  ],
+                                  1
                                 ),
                                 _vm._v(" "),
                                 _c(
-                                  "b-col",
-                                  {
-                                    staticClass: "card-text-price",
-                                    attrs: { cols: "4" }
-                                  },
-                                  [_vm._v("€." + _vm._s(product.cost))]
-                                )
-                              ],
-                              1
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "b-row",
-                              { attrs: { "align-h": "between" } },
-                              [
-                                _c("b-col", { attrs: { cols: "8" } }),
-                                _vm._v(" "),
-                                _c(
-                                  "b-col",
-                                  {
-                                    staticClass: "card-text-price-old",
-                                    attrs: { cols: "4" }
-                                  },
+                                  "b-row",
+                                  { attrs: { "align-h": "between" } },
                                   [
-                                    product.new_cost !== ""
-                                      ? _c("s", [
-                                          _vm._v(
-                                            "€." + _vm._s(product.new_cost)
-                                          )
-                                        ])
-                                      : _vm._e()
-                                  ]
+                                    _c("b-col", { attrs: { cols: "8" } }),
+                                    _vm._v(" "),
+                                    _c(
+                                      "b-col",
+                                      {
+                                        staticClass: "card-text-price-old",
+                                        attrs: { cols: "4" }
+                                      },
+                                      [
+                                        product.new_cost !== ""
+                                          ? _c("s", [
+                                              _vm._v(
+                                                "€." + _vm._s(product.new_cost)
+                                              )
+                                            ])
+                                          : _vm._e()
+                                      ]
+                                    )
+                                  ],
+                                  1
                                 )
                               ],
                               1
@@ -40630,11 +40643,10 @@ var render = function() {
                       ],
                       1
                     )
-                  }),
+                  ],
                   1
                 )
-              ],
-              1
+              })
             )
           ],
           1
