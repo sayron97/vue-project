@@ -5,16 +5,16 @@
                <div class="product-header-name row">
                   NEW PRODUCTS
                    <div class="slider-arrows">
-                       <b-img @click="prevPage" src="img/arrow-right.png" width="6" height="12" blank-color="#777" alt="img" class="m-1" />
-                       <b-img @click="nextPage" src="img/arrow-left.png" width="7" height="13" blank-color="#777" alt="img" class="m-1" />
+                       <b-img @click="prevPage('products')" src="img/arrow-right.png" width="6" height="12" blank-color="#777" alt="img" class="m-1" />
+                       <b-img @click="nextPage('products')" src="img/arrow-left.png" width="7" height="13" blank-color="#777" alt="img" class="m-1" />
                    </div>
                </div>
                <div class="product-header-slider">
                    <b-card-group columns @click="$router.push({name: 'product', params: {id: 1}})">
-                       <div v-for="product in products">
+                       <div v-for="product in paginatedData('products')">
                        <router-link to="/product/1">
                            <b-card style="width: 270px;"
-                               img-src="img/2.jpeg"
+                               :img-src="'img/' + product.img"
                                img-fluid
                                img-alt="image"
                                img-top
@@ -49,34 +49,43 @@
                 <div class="product-header-name row">
                     TOP PRODUCTS
                     <div class="slider-arrows">
-                        <b-img src="img/arrow-right.png" width="6" height="12" blank-color="#777" alt="img" class="m-1" />
-                        <b-img src="img/arrow-left.png" width="7" height="13" blank-color="#777" alt="img" class="m-1" />
+                        <b-img @click="prevPage('top-rated-products')" src="img/arrow-right.png" width="6" height="12" blank-color="#777" alt="img" class="m-1" />
+                        <b-img @click="nextPage('top-rated-products')" src="img/arrow-left.png" width="7" height="13" blank-color="#777" alt="img" class="m-1" />
                     </div>
                 </div>
                 <div class="product-header-slider">
-                    <b-card-group columns>
-                        <b-card style="width: 270px;"
-                                img-src="http://interier-foto.ru/wp-content/uploads/2014/11/juzhno-chujskij-hrebet4012.jpg"
-                                img-fluid
-                                img-alt="image"
-                                img-top
-                                v-for="i in imagesThree">
-                            <b-card-img src="img/Corner.png"
-                                        alt="Image"
-                                        bottom></b-card-img>
-                            <p class="card-text">
-                                <b-row align-h="between">
-                                    <b-col cols="8" class="card-text-name">Single Thruster 2014</b-col>
-                                    <b-col cols="4" class="card-text-price">€.865.00</b-col>
-                                </b-row>
-                                <b-row align-h="between">
-                                    <b-col cols="8"></b-col>
-                                    <b-col cols="4" class="card-text-price-old"><s>€.865.00</s></b-col>
-                                </b-row>
-                            </p>
-                        </b-card>
+                    <b-card-group columns @click="$router.push({name: 'product', params: {id: 1}})">
+                        <div v-for="product in paginatedData('top-rated-products')">
+                            <router-link to="/product/1">
+                                <b-card style="width: 270px;"
+                                        :img-src="'img/' + product.img"
+                                        img-fluid
+                                        img-alt="image"
+                                        img-top
 
+                                        @click='unshowComponent'>
+                                    <b-card-img v-if="product.is_hot !== 0" src="img/CornerHot.png"
+                                                alt="Image"
+                                                bottom></b-card-img>
 
+                                    <b-card-img v-else-if="product.is_new !== 0" src="img/Corner.png"
+                                                alt="Image"
+                                                bottom></b-card-img>
+                                    <div v-else class="empty-img"></div>
+                                    <p class="card-text">
+                                        <b-row align-h="between">
+                                            <b-col cols="8" class="card-text-name">{{product.name}}</b-col>
+                                            <b-col cols="4" class="card-text-price">€.{{product.cost}}</b-col>
+                                        </b-row>
+                                        <b-row align-h="between">
+                                            <b-col cols="8"></b-col>
+                                            <b-col cols="4" class="card-text-price-old"><s v-if="product.new_cost !== ''">€.{{product.new_cost}}</s></b-col>
+                                        </b-row>
+                                    </p>
+                                </b-card>
+                            </router-link>
+
+                        </div>
                     </b-card-group>
                 </div>
             </div>
@@ -84,34 +93,43 @@
                 <div class="product-header-name row">
                     SALE PRODUCTS
                     <div class="slider-arrows">
-                        <b-img src="img/arrow-right.png" width="6" height="12" blank-color="#777" alt="img" class="m-1" />
-                        <b-img src="img/arrow-left.png" width="7" height="13" blank-color="#777" alt="img" class="m-1" />
+                        <b-img @click="prevPage('top-sales-products')" src="img/arrow-right.png" width="6" height="12" blank-color="#777" alt="img" class="m-1" />
+                        <b-img @click="nextPage('top-sales-products')" src="img/arrow-left.png" width="7" height="13" blank-color="#777" alt="img" class="m-1" />
                     </div>
                 </div>
                 <div class="product-header-slider">
-                    <b-card-group columns>
-                        <b-card style="width: 270px;"
-                                img-src="http://interier-foto.ru/wp-content/uploads/2014/11/juzhno-chujskij-hrebet4012.jpg"
-                                img-fluid
-                                img-alt="image"
-                                img-top
-                                v-for="i in imagesThree">
-                            <b-card-img src="/img/Corner.png"
-                                        alt="Image"
-                                        bottom></b-card-img>
-                            <p class="card-text">
-                                <b-row align-h="between">
-                                    <b-col cols="8" class="card-text-name">Single Thruster 2014</b-col>
-                                    <b-col cols="4" class="card-text-price">€.865.00</b-col>
-                                </b-row>
-                                <b-row align-h="between">
-                                    <b-col cols="8"></b-col>
-                                    <b-col cols="4" class="card-text-price-old"><s>€.865.00</s></b-col>
-                                </b-row>
-                            </p>
-                        </b-card>
+                    <b-card-group columns @click="$router.push({name: 'product', params: {id: 1}})">
+                        <div v-for="product in paginatedData('top-sales-products')">
+                            <router-link to="/product/1">
+                                <b-card style="width: 270px;"
+                                        :img-src="'img/' + product.img"
+                                        img-fluid
+                                        img-alt="image"
+                                        img-top
 
+                                        @click='unshowComponent'>
+                                    <b-card-img v-if="product.is_hot !== 0" src="img/CornerHot.png"
+                                                alt="Image"
+                                                bottom></b-card-img>
 
+                                    <b-card-img v-else-if="product.is_new !== 0" src="img/Corner.png"
+                                                alt="Image"
+                                                bottom></b-card-img>
+                                    <div v-else class="empty-img"></div>
+                                    <p class="card-text">
+                                        <b-row align-h="between">
+                                            <b-col cols="8" class="card-text-name">{{product.name}}</b-col>
+                                            <b-col cols="4" class="card-text-price">€.{{product.cost}}</b-col>
+                                        </b-row>
+                                        <b-row align-h="between">
+                                            <b-col cols="8"></b-col>
+                                            <b-col cols="4" class="card-text-price-old"><s v-if="product.new_cost !== ''">€.{{product.new_cost}}</s></b-col>
+                                        </b-row>
+                                    </p>
+                                </b-card>
+                            </router-link>
+
+                        </div>
                     </b-card-group>
                 </div>
             </div>
@@ -205,21 +223,30 @@
     export default {
         data() {
             return {
-                images : [ 0, 1, 2, 3, 4, 5 ],
-                imagesThree : [ 0, 1, 2],
                 products : [],
-                pageNumber: 0  // по умолчанию 0
+                topSalesProducts : [],
+                topRatedProducts : [],
+                pageNumber: 0 ,
+                pageRatedNumber: 0 ,
+                pageSalesNumber: 0
             }
         },
         props:{
-            listData:{
-                type:Array,
-                required:true
-            },
+
             size:{
                 type:Number,
                 required:false,
-                default: 10
+                default: 6
+            },
+            topSalesSize:{
+                type:Number,
+                required:false,
+                default: 3
+            },
+            topRatedSize:{
+                type:Number,
+                required:false,
+                default: 3
             }
         },
 
@@ -228,32 +255,119 @@
                 this.$emit('unshowComponent', false);
             },
 
+
+
+
             getProducts(){
                 axios.get('/products', {})
                     .then(response => (this.products = response['data']));
             },
-            nextPage(){
-                this.pageNumber++;
+            getTopSalesProducts(){
+                axios.get('/get-sale-products', {})
+                    .then(response => (this.topSalesProducts = response['data']));
             },
-            prevPage(){
-                this.pageNumber--;
+            getTopRatedProducts(){
+                axios.get('/get-rated-products', {})
+                    .then(response => (this.topRatedProducts = response['data']));
             },
-            pageCount(){
-                let l = this.listData.length,
-                    s = this.size;
-                // редакция переводчика спасибо комментаторам
-                return Math.ceil(l/s);
-                // оригинал
-                // return Math.floor(l/s);
+
+
+
+            nextPage(type){
+
+                switch (type) {
+                    case 'products':
+                        if( this.pageNumber !== (this.pageCount('products') - 1)){
+                            this.pageNumber++;
+                        }
+                        break;
+                    case 'top-sales-products':
+                        if( this.pageSalesNumber !== (this.pageCount('top-sales-products') - 1)){
+                            this.pageSalesNumber++;
+                        }
+                        break;
+                    case 'top-rated-products':
+                        if( this.pageRatedNumber !== (this.pageCount('top-rated-products') - 1)){
+                            this.pageRatedNumber++;
+                        }
+                        break;
+                    default:
+                        if( this.pageNumber !== (this.pageCount('products') - 1)){
+                            this.pageNumber++;
+                        }
+                }
             },
-            paginatedData(){
-                const start = this.pageNumber * this.size,
-                    end = start + this.size;
-                return this.listData.slice(start, end);
+            prevPage(type){
+
+                switch (type) {
+                    case 'products':
+                        if( this.pageNumber !== 0){
+                            this.pageNumber--;
+                        }
+                        break;
+                    case 'top-sales-products':
+                        if( this.pageSalesNumber !== 0){
+                            this.pageSalesNumber--;
+                        }
+                        break;
+                    case 'top-rated-products':
+                        if( this.pageRatedNumber !== 0){
+                            this.pageRatedNumber--;
+                        }
+                        break;
+                    default:
+                        if( this.pageNumber !== 0){
+                            this.pageNumber--;
+                        }
+                }
+            },
+
+
+            pageCount(type){
+
+                switch (type) {
+                    case 'products':
+                        return Math.ceil(this.products.length/this.size);
+                        break;
+                    case 'top-sales-products':
+                        return Math.ceil(this.topSalesProducts.length/this.topSalesSize);
+                        break;
+                    case 'top-rated-products':
+                        return Math.ceil(this.topRatedProducts.length/this.topRatedSize);
+                        break;
+                    default:
+                        return Math.ceil(this.products.length/this.size);
+                }
+            },
+            paginatedData(type){
+                var start,end;
+                switch (type) {
+                    case 'products':
+                         start = this.pageNumber * this.size;
+                            end = start + this.size;
+                        return this.products.slice(start, end);
+                        break;
+                    case 'top-sales-products':
+                         start = this.pageSalesNumber * this.topSalesSize;
+                            end = start + this.topSalesSize;
+                        return this.topSalesProducts.slice(start, end);
+                        break;
+                    case 'top-rated-products':
+                         start = this.pageRatedNumber * this.topRatedSize;
+                            end = start + this.topRatedSize;
+                        return this.topRatedProducts.slice(start, end);
+                        break;
+                    default:
+                         start = this.pageNumber * this.size;
+                            end = start + this.size;
+                        return this.products.slice(start, end);
+                }
             }
         },
         beforeMount() {
-            this.getProducts()
+            this.getProducts();
+            this.getTopSalesProducts();
+            this.getTopRatedProducts();
         }
     }
 </script>

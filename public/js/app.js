@@ -13532,8 +13532,8 @@ var app = new __WEBPACK_IMPORTED_MODULE_0_vue___default.a({
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(global, setImmediate) {/*!
- * Vue.js v2.5.20
- * (c) 2014-2018 Evan You
+ * Vue.js v2.5.22
+ * (c) 2014-2019 Evan You
  * Released under the MIT License.
  */
 
@@ -14162,7 +14162,7 @@ if (true) {
       ? vm.options
       : vm._isVue
         ? vm.$options || vm.constructor.options
-        : vm || {};
+        : vm;
     var name = options.name || options._componentTag;
     var file = options.__file;
     if (!name && file) {
@@ -14257,9 +14257,9 @@ Dep.prototype.notify = function notify () {
   }
 };
 
-// the current target watcher being evaluated.
-// this is globally unique because there could be only one
-// watcher being evaluated at any time.
+// The current target watcher being evaluated.
+// This is globally unique because only one watcher
+// can be evaluated at a time.
 Dep.target = null;
 var targetStack = [];
 
@@ -14787,13 +14787,26 @@ function mergeHook (
   parentVal,
   childVal
 ) {
-  return childVal
+  var res = childVal
     ? parentVal
       ? parentVal.concat(childVal)
       : Array.isArray(childVal)
         ? childVal
         : [childVal]
-    : parentVal
+    : parentVal;
+  return res
+    ? dedupeHooks(res)
+    : res
+}
+
+function dedupeHooks (hooks) {
+  var res = [];
+  for (var i = 0; i < hooks.length; i++) {
+    if (res.indexOf(hooks[i]) === -1) {
+      res.push(hooks[i]);
+    }
+  }
+  return res
 }
 
 LIFECYCLE_HOOKS.forEach(function (hook) {
@@ -15029,7 +15042,7 @@ function mergeOptions (
   normalizeProps(child, vm);
   normalizeInject(child, vm);
   normalizeDirectives(child);
-  
+
   // Apply extends and mixins on the child options,
   // but only if it is a raw options object that isn't
   // the result of another mergeOptions call.
@@ -15962,6 +15975,8 @@ function resolveAsyncComponent (
       // (async resolves are shimmed as synchronous during SSR)
       if (!sync) {
         forceRender(true);
+      } else {
+        contexts.length = 0;
       }
     });
 
@@ -16129,8 +16144,8 @@ function eventsMixin (Vue) {
     }
     // array of events
     if (Array.isArray(event)) {
-      for (var i = 0, l = event.length; i < l; i++) {
-        vm.$off(event[i], fn);
+      for (var i$1 = 0, l = event.length; i$1 < l; i$1++) {
+        vm.$off(event[i$1], fn);
       }
       return vm
     }
@@ -16143,16 +16158,14 @@ function eventsMixin (Vue) {
       vm._events[event] = null;
       return vm
     }
-    if (fn) {
-      // specific handler
-      var cb;
-      var i$1 = cbs.length;
-      while (i$1--) {
-        cb = cbs[i$1];
-        if (cb === fn || cb.fn === fn) {
-          cbs.splice(i$1, 1);
-          break
-        }
+    // specific handler
+    var cb;
+    var i = cbs.length;
+    while (i--) {
+      cb = cbs[i];
+      if (cb === fn || cb.fn === fn) {
+        cbs.splice(i, 1);
+        break
       }
     }
     return vm
@@ -16434,7 +16447,7 @@ function mountComponent (
   // component's mounted hook), which relies on vm._watcher being already defined
   new Watcher(vm, updateComponent, noop, {
     before: function before () {
-      if (vm._isMounted) {
+      if (vm._isMounted && !vm._isDestroyed) {
         callHook(vm, 'beforeUpdate');
       }
     }
@@ -17375,9 +17388,10 @@ function renderList (
       ret[i] = render(val[key], key, i);
     }
   }
-  if (isDef(ret)) {
-    (ret)._isVList = true;
+  if (!isDef(ret)) {
+    ret = [];
   }
+  (ret)._isVList = true;
   return ret
 }
 
@@ -18321,34 +18335,14 @@ function resolveConstructorOptions (Ctor) {
 function resolveModifiedOptions (Ctor) {
   var modified;
   var latest = Ctor.options;
-  var extended = Ctor.extendOptions;
   var sealed = Ctor.sealedOptions;
   for (var key in latest) {
     if (latest[key] !== sealed[key]) {
       if (!modified) { modified = {}; }
-      modified[key] = dedupe(latest[key], extended[key], sealed[key]);
+      modified[key] = latest[key];
     }
   }
   return modified
-}
-
-function dedupe (latest, extended, sealed) {
-  // compare latest and sealed to ensure lifecycle hooks won't be duplicated
-  // between merges
-  if (Array.isArray(latest)) {
-    var res = [];
-    sealed = Array.isArray(sealed) ? sealed : [sealed];
-    extended = Array.isArray(extended) ? extended : [extended];
-    for (var i = 0; i < latest.length; i++) {
-      // push original options and not sealed options to exclude duplicated options
-      if (extended.indexOf(latest[i]) >= 0 || sealed.indexOf(latest[i]) < 0) {
-        res.push(latest[i]);
-      }
-    }
-    return res
-  } else {
-    return latest
-  }
 }
 
 function Vue (options) {
@@ -18719,7 +18713,7 @@ Object.defineProperty(Vue, 'FunctionalRenderContext', {
   value: FunctionalRenderContext
 });
 
-Vue.version = '2.5.20';
+Vue.version = '2.5.22';
 
 /*  */
 
@@ -20377,7 +20371,7 @@ function genComponentModel (
 
   el.model = {
     value: ("(" + value + ")"),
-    expression: ("\"" + value + "\""),
+    expression: JSON.stringify(value),
     callback: ("function (" + baseValueExpression + ") {" + assignment + "}")
   };
 }
@@ -22998,7 +22992,7 @@ function processKey (el) {
         var parent = el.parent;
         if (iterator && iterator === exp && parent && parent.tag === 'transition-group') {
           warn$2(
-            "Do not use v-for index as key on <transtion-group> children, " +
+            "Do not use v-for index as key on <transition-group> children, " +
             "this is the same as not using keys."
           );
         }
@@ -24115,7 +24109,9 @@ function genChildren (
       el$1.tag !== 'template' &&
       el$1.tag !== 'slot'
     ) {
-      var normalizationType = checkSkip && state.maybeComponent(el$1) ? ",1" : "";
+      var normalizationType = checkSkip
+        ? state.maybeComponent(el$1) ? ",1" : ",0"
+        : "";
       return ("" + ((altGenElement || genElement)(el$1, state)) + normalizationType)
     }
     var normalizationType$1 = checkSkip
@@ -40421,28 +40417,55 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
-            images: [0, 1, 2, 3, 4, 5],
-            imagesThree: [0, 1, 2],
             products: [],
-            pageNumber: 0 // по умолчанию 0
+            topSalesProducts: [],
+            topRatedProducts: [],
+            pageNumber: 0,
+            pageRatedNumber: 0,
+            pageSalesNumber: 0
         };
     },
 
     props: {
-        listData: {
-            type: Array,
-            required: true
-        },
+
         size: {
             type: Number,
             required: false,
-            default: 10
+            default: 6
+        },
+        topSalesSize: {
+            type: Number,
+            required: false,
+            default: 3
+        },
+        topRatedSize: {
+            type: Number,
+            required: false,
+            default: 3
         }
     },
 
@@ -40457,28 +40480,113 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 return _this.products = response['data'];
             });
         },
-        nextPage: function nextPage() {
-            this.pageNumber++;
+        getTopSalesProducts: function getTopSalesProducts() {
+            var _this2 = this;
+
+            __WEBPACK_IMPORTED_MODULE_0_axios___default.a.get('/get-sale-products', {}).then(function (response) {
+                return _this2.topSalesProducts = response['data'];
+            });
         },
-        prevPage: function prevPage() {
-            this.pageNumber--;
+        getTopRatedProducts: function getTopRatedProducts() {
+            var _this3 = this;
+
+            __WEBPACK_IMPORTED_MODULE_0_axios___default.a.get('/get-rated-products', {}).then(function (response) {
+                return _this3.topRatedProducts = response['data'];
+            });
         },
-        pageCount: function pageCount() {
-            var l = this.listData.length,
-                s = this.size;
-            // редакция переводчика спасибо комментаторам
-            return Math.ceil(l / s);
-            // оригинал
-            // return Math.floor(l/s);
+        nextPage: function nextPage(type) {
+
+            switch (type) {
+                case 'products':
+                    if (this.pageNumber !== this.pageCount('products') - 1) {
+                        this.pageNumber++;
+                    }
+                    break;
+                case 'top-sales-products':
+                    if (this.pageSalesNumber !== this.pageCount('top-sales-products') - 1) {
+                        this.pageSalesNumber++;
+                    }
+                    break;
+                case 'top-rated-products':
+                    if (this.pageRatedNumber !== this.pageCount('top-rated-products') - 1) {
+                        this.pageRatedNumber++;
+                    }
+                    break;
+                default:
+                    if (this.pageNumber !== this.pageCount('products') - 1) {
+                        this.pageNumber++;
+                    }
+            }
         },
-        paginatedData: function paginatedData() {
-            var start = this.pageNumber * this.size,
-                end = start + this.size;
-            return this.listData.slice(start, end);
+        prevPage: function prevPage(type) {
+
+            switch (type) {
+                case 'products':
+                    if (this.pageNumber !== 0) {
+                        this.pageNumber--;
+                    }
+                    break;
+                case 'top-sales-products':
+                    if (this.pageSalesNumber !== 0) {
+                        this.pageSalesNumber--;
+                    }
+                    break;
+                case 'top-rated-products':
+                    if (this.pageRatedNumber !== 0) {
+                        this.pageRatedNumber--;
+                    }
+                    break;
+                default:
+                    if (this.pageNumber !== 0) {
+                        this.pageNumber--;
+                    }
+            }
+        },
+        pageCount: function pageCount(type) {
+
+            switch (type) {
+                case 'products':
+                    return Math.ceil(this.products.length / this.size);
+                    break;
+                case 'top-sales-products':
+                    return Math.ceil(this.topSalesProducts.length / this.topSalesSize);
+                    break;
+                case 'top-rated-products':
+                    return Math.ceil(this.topRatedProducts.length / this.topRatedSize);
+                    break;
+                default:
+                    return Math.ceil(this.products.length / this.size);
+            }
+        },
+        paginatedData: function paginatedData(type) {
+            var start, end;
+            switch (type) {
+                case 'products':
+                    start = this.pageNumber * this.size;
+                    end = start + this.size;
+                    return this.products.slice(start, end);
+                    break;
+                case 'top-sales-products':
+                    start = this.pageSalesNumber * this.topSalesSize;
+                    end = start + this.topSalesSize;
+                    return this.topSalesProducts.slice(start, end);
+                    break;
+                case 'top-rated-products':
+                    start = this.pageRatedNumber * this.topRatedSize;
+                    end = start + this.topRatedSize;
+                    return this.topRatedProducts.slice(start, end);
+                    break;
+                default:
+                    start = this.pageNumber * this.size;
+                    end = start + this.size;
+                    return this.products.slice(start, end);
+            }
         }
     },
     beforeMount: function beforeMount() {
         this.getProducts();
+        this.getTopSalesProducts();
+        this.getTopRatedProducts();
     }
 });
 
@@ -40508,7 +40616,11 @@ var render = function() {
                   "blank-color": "#777",
                   alt: "img"
                 },
-                on: { click: _vm.prevPage }
+                on: {
+                  click: function($event) {
+                    _vm.prevPage("products")
+                  }
+                }
               }),
               _vm._v(" "),
               _c("b-img", {
@@ -40520,7 +40632,11 @@ var render = function() {
                   "blank-color": "#777",
                   alt: "img"
                 },
-                on: { click: _vm.nextPage }
+                on: {
+                  click: function($event) {
+                    _vm.nextPage("products")
+                  }
+                }
               })
             ],
             1
@@ -40541,7 +40657,7 @@ var render = function() {
                   }
                 }
               },
-              _vm._l(_vm.products, function(product) {
+              _vm._l(_vm.paginatedData("products"), function(product) {
                 return _c(
                   "div",
                   [
@@ -40554,7 +40670,7 @@ var render = function() {
                           {
                             staticStyle: { width: "270px" },
                             attrs: {
-                              "img-src": "img/2.jpeg",
+                              "img-src": "img/" + product.main_img,
                               "img-fluid": "",
                               "img-alt": "image",
                               "img-top": ""
@@ -40646,7 +40762,8 @@ var render = function() {
                   ],
                   1
                 )
-              })
+              }),
+              0
             )
           ],
           1
@@ -40668,6 +40785,11 @@ var render = function() {
                   height: "12",
                   "blank-color": "#777",
                   alt: "img"
+                },
+                on: {
+                  click: function($event) {
+                    _vm.prevPage("top-rated-products")
+                  }
                 }
               }),
               _vm._v(" "),
@@ -40679,6 +40801,11 @@ var render = function() {
                   height: "13",
                   "blank-color": "#777",
                   alt: "img"
+                },
+                on: {
+                  click: function($event) {
+                    _vm.nextPage("top-rated-products")
+                  }
                 }
               })
             ],
@@ -40692,67 +40819,111 @@ var render = function() {
           [
             _c(
               "b-card-group",
-              { attrs: { columns: "" } },
-              _vm._l(_vm.imagesThree, function(i) {
+              {
+                attrs: { columns: "" },
+                on: {
+                  click: function($event) {
+                    _vm.$router.push({ name: "product", params: { id: 1 } })
+                  }
+                }
+              },
+              _vm._l(_vm.paginatedData("top-rated-products"), function(
+                product
+              ) {
                 return _c(
-                  "b-card",
-                  {
-                    staticStyle: { width: "270px" },
-                    attrs: {
-                      "img-src":
-                        "http://interier-foto.ru/wp-content/uploads/2014/11/juzhno-chujskij-hrebet4012.jpg",
-                      "img-fluid": "",
-                      "img-alt": "image",
-                      "img-top": ""
-                    }
-                  },
+                  "div",
                   [
-                    _c("b-card-img", {
-                      attrs: { src: "img/Corner.png", alt: "Image", bottom: "" }
-                    }),
-                    _vm._v(" "),
                     _c(
-                      "p",
-                      { staticClass: "card-text" },
+                      "router-link",
+                      { attrs: { to: "/product/1" } },
                       [
                         _c(
-                          "b-row",
-                          { attrs: { "align-h": "between" } },
+                          "b-card",
+                          {
+                            staticStyle: { width: "270px" },
+                            attrs: {
+                              "img-src": "img/" + product.main_img,
+                              "img-fluid": "",
+                              "img-alt": "image",
+                              "img-top": ""
+                            },
+                            on: { click: _vm.unshowComponent }
+                          },
                           [
-                            _c(
-                              "b-col",
-                              {
-                                staticClass: "card-text-name",
-                                attrs: { cols: "8" }
-                              },
-                              [_vm._v("Single Thruster 2014")]
-                            ),
+                            product.is_hot !== 0
+                              ? _c("b-card-img", {
+                                  attrs: {
+                                    src: "img/CornerHot.png",
+                                    alt: "Image",
+                                    bottom: ""
+                                  }
+                                })
+                              : product.is_new !== 0
+                              ? _c("b-card-img", {
+                                  attrs: {
+                                    src: "img/Corner.png",
+                                    alt: "Image",
+                                    bottom: ""
+                                  }
+                                })
+                              : _c("div", { staticClass: "empty-img" }),
                             _vm._v(" "),
                             _c(
-                              "b-col",
-                              {
-                                staticClass: "card-text-price",
-                                attrs: { cols: "4" }
-                              },
-                              [_vm._v("€.865.00")]
-                            )
-                          ],
-                          1
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "b-row",
-                          { attrs: { "align-h": "between" } },
-                          [
-                            _c("b-col", { attrs: { cols: "8" } }),
-                            _vm._v(" "),
-                            _c(
-                              "b-col",
-                              {
-                                staticClass: "card-text-price-old",
-                                attrs: { cols: "4" }
-                              },
-                              [_c("s", [_vm._v("€.865.00")])]
+                              "p",
+                              { staticClass: "card-text" },
+                              [
+                                _c(
+                                  "b-row",
+                                  { attrs: { "align-h": "between" } },
+                                  [
+                                    _c(
+                                      "b-col",
+                                      {
+                                        staticClass: "card-text-name",
+                                        attrs: { cols: "8" }
+                                      },
+                                      [_vm._v(_vm._s(product.name))]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "b-col",
+                                      {
+                                        staticClass: "card-text-price",
+                                        attrs: { cols: "4" }
+                                      },
+                                      [_vm._v("€." + _vm._s(product.cost))]
+                                    )
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "b-row",
+                                  { attrs: { "align-h": "between" } },
+                                  [
+                                    _c("b-col", { attrs: { cols: "8" } }),
+                                    _vm._v(" "),
+                                    _c(
+                                      "b-col",
+                                      {
+                                        staticClass: "card-text-price-old",
+                                        attrs: { cols: "4" }
+                                      },
+                                      [
+                                        product.new_cost !== ""
+                                          ? _c("s", [
+                                              _vm._v(
+                                                "€." + _vm._s(product.new_cost)
+                                              )
+                                            ])
+                                          : _vm._e()
+                                      ]
+                                    )
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
                             )
                           ],
                           1
@@ -40764,7 +40935,7 @@ var render = function() {
                   1
                 )
               }),
-              1
+              0
             )
           ],
           1
@@ -40786,6 +40957,11 @@ var render = function() {
                   height: "12",
                   "blank-color": "#777",
                   alt: "img"
+                },
+                on: {
+                  click: function($event) {
+                    _vm.prevPage("top-sales-products")
+                  }
                 }
               }),
               _vm._v(" "),
@@ -40797,6 +40973,11 @@ var render = function() {
                   height: "13",
                   "blank-color": "#777",
                   alt: "img"
+                },
+                on: {
+                  click: function($event) {
+                    _vm.nextPage("top-sales-products")
+                  }
                 }
               })
             ],
@@ -40810,71 +40991,111 @@ var render = function() {
           [
             _c(
               "b-card-group",
-              { attrs: { columns: "" } },
-              _vm._l(_vm.imagesThree, function(i) {
+              {
+                attrs: { columns: "" },
+                on: {
+                  click: function($event) {
+                    _vm.$router.push({ name: "product", params: { id: 1 } })
+                  }
+                }
+              },
+              _vm._l(_vm.paginatedData("top-sales-products"), function(
+                product
+              ) {
                 return _c(
-                  "b-card",
-                  {
-                    staticStyle: { width: "270px" },
-                    attrs: {
-                      "img-src":
-                        "http://interier-foto.ru/wp-content/uploads/2014/11/juzhno-chujskij-hrebet4012.jpg",
-                      "img-fluid": "",
-                      "img-alt": "image",
-                      "img-top": ""
-                    }
-                  },
+                  "div",
                   [
-                    _c("b-card-img", {
-                      attrs: {
-                        src: "/img/Corner.png",
-                        alt: "Image",
-                        bottom: ""
-                      }
-                    }),
-                    _vm._v(" "),
                     _c(
-                      "p",
-                      { staticClass: "card-text" },
+                      "router-link",
+                      { attrs: { to: "/product/1" } },
                       [
                         _c(
-                          "b-row",
-                          { attrs: { "align-h": "between" } },
+                          "b-card",
+                          {
+                            staticStyle: { width: "270px" },
+                            attrs: {
+                              "img-src": "img/" + product.main_img,
+                              "img-fluid": "",
+                              "img-alt": "image",
+                              "img-top": ""
+                            },
+                            on: { click: _vm.unshowComponent }
+                          },
                           [
-                            _c(
-                              "b-col",
-                              {
-                                staticClass: "card-text-name",
-                                attrs: { cols: "8" }
-                              },
-                              [_vm._v("Single Thruster 2014")]
-                            ),
+                            product.is_hot !== 0
+                              ? _c("b-card-img", {
+                                  attrs: {
+                                    src: "img/CornerHot.png",
+                                    alt: "Image",
+                                    bottom: ""
+                                  }
+                                })
+                              : product.is_new !== 0
+                              ? _c("b-card-img", {
+                                  attrs: {
+                                    src: "img/Corner.png",
+                                    alt: "Image",
+                                    bottom: ""
+                                  }
+                                })
+                              : _c("div", { staticClass: "empty-img" }),
                             _vm._v(" "),
                             _c(
-                              "b-col",
-                              {
-                                staticClass: "card-text-price",
-                                attrs: { cols: "4" }
-                              },
-                              [_vm._v("€.865.00")]
-                            )
-                          ],
-                          1
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "b-row",
-                          { attrs: { "align-h": "between" } },
-                          [
-                            _c("b-col", { attrs: { cols: "8" } }),
-                            _vm._v(" "),
-                            _c(
-                              "b-col",
-                              {
-                                staticClass: "card-text-price-old",
-                                attrs: { cols: "4" }
-                              },
-                              [_c("s", [_vm._v("€.865.00")])]
+                              "p",
+                              { staticClass: "card-text" },
+                              [
+                                _c(
+                                  "b-row",
+                                  { attrs: { "align-h": "between" } },
+                                  [
+                                    _c(
+                                      "b-col",
+                                      {
+                                        staticClass: "card-text-name",
+                                        attrs: { cols: "8" }
+                                      },
+                                      [_vm._v(_vm._s(product.name))]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "b-col",
+                                      {
+                                        staticClass: "card-text-price",
+                                        attrs: { cols: "4" }
+                                      },
+                                      [_vm._v("€." + _vm._s(product.cost))]
+                                    )
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "b-row",
+                                  { attrs: { "align-h": "between" } },
+                                  [
+                                    _c("b-col", { attrs: { cols: "8" } }),
+                                    _vm._v(" "),
+                                    _c(
+                                      "b-col",
+                                      {
+                                        staticClass: "card-text-price-old",
+                                        attrs: { cols: "4" }
+                                      },
+                                      [
+                                        product.new_cost !== ""
+                                          ? _c("s", [
+                                              _vm._v(
+                                                "€." + _vm._s(product.new_cost)
+                                              )
+                                            ])
+                                          : _vm._e()
+                                      ]
+                                    )
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
                             )
                           ],
                           1
@@ -40886,7 +41107,7 @@ var render = function() {
                   1
                 )
               }),
-              1
+              0
             )
           ],
           1
@@ -55320,7 +55541,8 @@ var render = function() {
             _vm._v(" "),
             _c("td", [_vm._v(_vm._s(us.email))])
           ])
-        })
+        }),
+        0
       )
     ])
   ])

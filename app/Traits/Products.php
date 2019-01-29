@@ -23,4 +23,14 @@ trait Products
     {
         return $this->productsRepo->getAll();
     }
+
+    public function ratedProducts()
+    {
+        return $this->productsRepo->getTopRated();
+    }
+
+    public function saleProducts()
+    {
+        return $this->productsRepo->getTopSales();
+    }
 }

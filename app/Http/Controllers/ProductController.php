@@ -83,4 +83,14 @@ class ProductController extends Controller
     {
         //
     }
+
+    public function getRatedProducts()
+    {
+        return response()->json($this->ratedProducts());
+    }
+
+    public function getSaleProducts()
+    {
+        return response()->json($this->saleProducts());
+    }
 }

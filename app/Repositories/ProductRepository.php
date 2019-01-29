@@ -9,7 +9,7 @@ namespace App\Repositories;
 use App\Models\Products;
 use Illuminate\Support\Facades\DB;
 
-class ProductRepository implements BasicRepository
+class ProductRepository implements BasicRepository,ProductsInterface
 {
     public function update($arr)
     {
@@ -41,5 +41,13 @@ class ProductRepository implements BasicRepository
     public function delete($id)
     {
         // TODO: Implement delete() method.
+    }
+    public function getTopRated()
+    {
+        return Products::orderBy('rating', 'desc')->get();
+    }
+    public function getTopSales()
+    {
+        return Products::where('is_hot', '1')->get();
     }
 }

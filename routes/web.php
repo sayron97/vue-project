@@ -15,6 +15,9 @@ Route::resources([
     'tags' => 'TagsController',
     'products' => 'ProductController'
 ]);
+Route::get('/get-rated-products', 'ProductController@getRatedProducts');
+Route::get('/get-sale-products', 'ProductController@getSaleProducts');
+
 Route::post('/send-user', 'SpaController@post');
 Route::get('/users', 'SpaController@get');
 Route::get('/users-delete', 'SpaController@deleteAll');
